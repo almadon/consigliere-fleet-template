@@ -90,8 +90,8 @@ shared by a set of hosts (e.g. Arkeep's server and agents) gets a group that is
 exactly that set, plus a scope of the same name (see `arkeep` in `groups.yml`).
 
 ```bash
-scripts/vault.sh create server_traefik   # encrypts vault.yml.example in place
-scripts/vault.sh edit   server_traefik   # prompts, or reads ~/.config/consigliere/vault/<scope>
+scripts/vault.sh create agent_certwarden   # encrypts vault.yml.example in place
+scripts/vault.sh edit   agent_certwarden   # prompts, or reads ~/.config/consigliere/vault/<scope>
 ```
 
 `scripts/preflight.sh` checks that every vault file is encrypted and that its

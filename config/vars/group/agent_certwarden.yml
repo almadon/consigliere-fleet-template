@@ -1,0 +1,18 @@
+---
+# Hosts that fetch certificates from Cert Warden (typically every Traefik host).
+# API keys are NOT here -- they are in agent_certwarden/vault.yml (vault id
+# agent_certwarden). Several layers may each define agent_certwarden_certs_<x>.
+
+# Where Cert Warden is reachable: its Tailscale IP and HTTPS port.
+agent_certwarden_server_url: "https://CHANGEME-tailscale-address:4055"
+
+# Certificate names as they appear in Cert Warden. Each is written to
+# /opt/certs/<name>/{fullchain,privkey}.pem
+agent_certwarden_certs:
+  - name: wildcard_example_com
+
+# Cert Warden presents a self-signed certificate until it has issued one for
+# itself. Point at its CA file, or set false to skip verification (tolerable
+# only because the link is already on the tailnet).
+# agent_certwarden_ca_file: /etc/ssl/certwarden-ca.pem
+# agent_certwarden_verify_tls: false

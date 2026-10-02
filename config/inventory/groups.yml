@@ -18,6 +18,8 @@ groups:
   agent_arcane: "'tag:CHANGE-ME' in tailscale_tags"
   server_semaphore: "'tag:CHANGE-ME' in tailscale_tags"
   server_traefik: "'tag:CHANGE-ME' in tailscale_tags"   # runs the Traefik edge proxy
+  server_certwarden: "'tag:CHANGE-ME' in tailscale_tags"   # the one central ACME client
+  agent_certwarden: "'tag:CHANGE-ME' in tailscale_tags"   # fetches certificates from it
   server_wazuh: "'tag:CHANGE-ME' in tailscale_tags"
   agent_wazuh: "'tag:CHANGE-ME' in tailscale_tags"
   # --- shared-secret groups: a union of the hosts that must share a secret ---
