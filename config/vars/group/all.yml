@@ -8,4 +8,4 @@ docker_mode: standalone   # standalone | swarm — set per-group once swarm host
 # Set once stacks/wazuh/ is deployed in your fleet -- the agent_wazuh
 # role refuses to enroll a wazuh-agent without this. Tailscale address of
 # the tag:wazuh-manager host, e.g.:
-# agent_wazuh_manager_addr: 100.x.x.x
+# server_wazuh_addr: 100.x.x.x
