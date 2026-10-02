@@ -14,10 +14,10 @@
     - docker
 
 - name: Arkeep server
-  hosts: arkeep_server
+  hosts: server_arkeep
   become: true
   roles:
-    - arkeep_server
+    - server_arkeep
 
 # - name: My app
 #   hosts: some_group

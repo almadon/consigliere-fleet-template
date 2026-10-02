@@ -11,16 +11,16 @@
 # file exists at the root of your fleet-config repo; otherwise run
 # ansible-playbook by hand with --ask-vault-pass.
 
-# Shared between hosts/roles/arkeep_server and hosts/roles/arkeep_agent --
+# Shared between hosts/roles/server_arkeep and hosts/roles/agent_arkeep --
 # every host must use the SAME value. Generate: openssl rand -hex 24
-arkeep_agent_secret: CHANGEME
+agent_arkeep_secret: CHANGEME
 
-# arkeep_server only. Generate: openssl rand -hex 32
-arkeep_secret_key: CHANGEME
+# server_arkeep only. Generate: openssl rand -hex 32
+server_arkeep_secret_key: CHANGEME
 
-# arcane_manager only. Generate: openssl rand -base64 32
-arcane_encryption_key: CHANGEME
+# server_arcane only. Generate: openssl rand -base64 32
+server_arcane_encryption_key: CHANGEME
 
 # semaphore only. Generate: openssl rand -base64 32 (admin password: your choice)
-semaphore_admin_password: CHANGEME
-semaphore_access_key_encryption: CHANGEME
+server_semaphore_admin_password: CHANGEME
+server_semaphore_access_key_encryption: CHANGEME

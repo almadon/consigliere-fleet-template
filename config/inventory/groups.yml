@@ -12,12 +12,12 @@ plugin: ansible.builtin.constructed
 strict: false
 groups:
   # --- services: which roles a host runs (framework group names, left) ---
-  arkeep_server: "'tag:CHANGE-ME' in tailscale_tags"   # runs the Arkeep console
-  arkeep_agent: "'tag:CHANGE-ME' in tailscale_tags"   # gets backed up
-  arcane_manager: "'tag:CHANGE-ME' in tailscale_tags"
-  arcane_agent: "'tag:CHANGE-ME' in tailscale_tags"
-  semaphore: "'tag:CHANGE-ME' in tailscale_tags"
-  wazuh_manager: "'tag:CHANGE-ME' in tailscale_tags"
-  wazuh_agent: "'tag:CHANGE-ME' in tailscale_tags"
+  server_arkeep: "'tag:CHANGE-ME' in tailscale_tags"   # runs the Arkeep console
+  agent_arkeep: "'tag:CHANGE-ME' in tailscale_tags"   # gets backed up
+  server_arcane: "'tag:CHANGE-ME' in tailscale_tags"
+  agent_arcane: "'tag:CHANGE-ME' in tailscale_tags"
+  server_semaphore: "'tag:CHANGE-ME' in tailscale_tags"
+  server_wazuh: "'tag:CHANGE-ME' in tailscale_tags"
+  agent_wazuh: "'tag:CHANGE-ME' in tailscale_tags"
   # --- anything else you want to attach vars to (names are yours) ----------
   # vps: "'tag:CHANGE-ME' in tailscale_tags"   # then put vars in vars/group/vps.yml

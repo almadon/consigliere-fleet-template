@@ -5,7 +5,7 @@
 
 docker_mode: standalone   # standalone | swarm — set per-group once swarm hosts exist
 
-# Set once stacks/wazuh/ is deployed in your fleet -- the security_posture
+# Set once stacks/wazuh/ is deployed in your fleet -- the agent_wazuh
 # role refuses to enroll a wazuh-agent without this. Tailscale address of
 # the tag:wazuh-manager host, e.g.:
-# security_posture_wazuh_manager_addr: 100.x.x.x
+# agent_wazuh_manager_addr: 100.x.x.x
