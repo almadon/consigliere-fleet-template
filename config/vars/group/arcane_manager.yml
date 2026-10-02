@@ -1,0 +1,9 @@
+---
+# Real values for hosts/roles/arcane_manager -- applies to tag:arcane-manager
+# (one host). arcane_encryption_key comes from config/vars/group/all/vault.yml.
+
+# Leave empty for a standalone deployment with Arcane's port exposed
+# directly. Set to a shared external Docker network name if this node also
+# runs Traefik -- see hosts/roles/arkeep_server/README.md for the pattern
+# (same idea applies here).
+arcane_manager_network: ""

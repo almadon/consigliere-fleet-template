@@ -1,0 +1,15 @@
+---
+# Real values for hosts/roles/arkeep_agent -- applies to tag:arkeep-agent
+# (every backed-up host). arkeep_agent_secret comes from
+# config/vars/group/all/vault.yml (shared with arkeep_server, must match exactly).
+
+# gRPC address of your tag:arkeep-server host -- its Tailscale address plus
+# the gRPC port (9090 by default, see hosts/roles/arkeep_server/defaults).
+arkeep_server_addr: "CHANGEME-tailscale-address:9090"
+
+# Set only if the server is behind a reverse proxy -- its public HTTPS URL.
+arkeep_agent_server_http_addr: ""
+
+# Override per-host in config/vars/host/<hostname>.yml if a host has nothing
+# unusual to back up beyond what Arkeep auto-discovers (Docker volumes).
+arkeep_agent_backup_paths: []

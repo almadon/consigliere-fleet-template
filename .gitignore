@@ -1,0 +1,8 @@
+# Never commit host credentials or plaintext secrets
+.vault_pass
+*.vault-pass
+deploy_key
+deploy_key.pub
+*.pem
+*.key
+.DS_Store

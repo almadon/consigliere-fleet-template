@@ -1,0 +1,26 @@
+---
+# OPTIONAL. Rename to site.yml to take over "which roles run where" instead
+# of using the framework's default hosts/site.yml. Roles come from the
+# framework (hosts/roles/*) and from this repo's own config/roles/*. Use
+# this to add your own site-specific roles (apps), reorder, or drop plays.
+# Group names must match the left-hand side of inventory/groups.yml.
+
+- name: Baseline
+  hosts: all
+  become: true
+  roles:
+    - baseline
+    - tailscale
+    - docker
+
+- name: Arkeep server
+  hosts: arkeep_server
+  become: true
+  roles:
+    - arkeep_server
+
+# - name: My app
+#   hosts: some_group
+#   become: true
+#   roles:
+#     - my_app          # config/roles/my_app/ in this repo

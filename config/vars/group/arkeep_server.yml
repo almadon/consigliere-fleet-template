@@ -1,0 +1,16 @@
+---
+# Real values for hosts/roles/arkeep_server -- applies to tag:arkeep-server
+# (one host). Secrets (arkeep_secret_key, arkeep_agent_secret) come from
+# config/vars/group/all/vault.yml, never from here.
+
+# Leave empty for a standalone deployment. If this node also runs Traefik
+# (see roadmap in VISION.md), set to a shared external Docker network name
+# and see hosts/roles/arkeep_server/README.md for the full wiring.
+arkeep_server_network: ""
+
+# Set once Traefik is fronting this node -- the public HTTPS URL.
+arkeep_server_base_url: ""
+
+# Publish Arkeep's ports on this host's Tailscale IP only (recommended when
+# the host has a public address -- Docker bypasses ufw). Empty = all interfaces.
+arkeep_server_bind_address: ""

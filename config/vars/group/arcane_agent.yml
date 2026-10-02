@@ -1,0 +1,7 @@
+---
+# Real values for hosts/roles/arcane_agent -- applies to tag:arcane-agent.
+# arcane_agent_token is NOT here -- it's per-host (minted individually from
+# the Arcane manager's UI), so it belongs in config/vars/host/<hostname>.yml
+# instead. See config/vars/host/example-arcane-agent-host.yml in this directory.
+
+arcane_manager_api_url: "https://CHANGEME-manager-url"

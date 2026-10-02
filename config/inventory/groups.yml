@@ -1,0 +1,23 @@
+---
+# YOUR taxonomy. Maps your own Tailscale tag names onto the framework's
+# group names. The framework only ever refers to the group names on the left
+# (they're how hosts/site.yml targets roles); the tags on the right are
+# whatever you've chosen to call things -- they never appear in the public
+# framework.
+#
+# Each host evaluates this against its own tags, which the framework's
+# inventory script exposes as `tailscale_tags` (e.g. ["tag:srv-foo"]).
+# Hosts matching nothing still get the baseline (docker, tailscale, ...).
+plugin: ansible.builtin.constructed
+strict: false
+groups:
+  # --- services: which roles a host runs (framework group names, left) ---
+  arkeep_server: "'tag:CHANGE-ME' in tailscale_tags"   # runs the Arkeep console
+  arkeep_agent: "'tag:CHANGE-ME' in tailscale_tags"   # gets backed up
+  arcane_manager: "'tag:CHANGE-ME' in tailscale_tags"
+  arcane_agent: "'tag:CHANGE-ME' in tailscale_tags"
+  semaphore: "'tag:CHANGE-ME' in tailscale_tags"
+  wazuh_manager: "'tag:CHANGE-ME' in tailscale_tags"
+  wazuh_agent: "'tag:CHANGE-ME' in tailscale_tags"
+  # --- anything else you want to attach vars to (names are yours) ----------
+  # vps: "'tag:CHANGE-ME' in tailscale_tags"   # then put vars in vars/group/vps.yml
