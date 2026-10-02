@@ -10,9 +10,21 @@ strict=0; [ "${1:-}" = "--strict" ] && strict=1
 rc=0
 
 while IFS= read -r f; do
-  if ! head -1 "$f" | grep -q '^\$ANSIBLE_VAULT;'; then
-    echo "ERROR: $f is not ansible-vault encrypted -- run: ansible-vault encrypt $f" >&2
+  header="$(head -1 "$f")"
+  if ! printf '%s' "$header" | grep -q '^\$ANSIBLE_VAULT;'; then
+    echo "ERROR: $f is not ansible-vault encrypted -- run: scripts/vault.sh create <scope>" >&2
     rc=1
+    continue
+  fi
+  # The vault id must match the folder (all -> base): that is what lets a host
+  # be given only the passwords for the scopes it should read.
+  dir="$(basename "$(dirname "$f")")"
+  want="$([ "$dir" = all ] && echo base || echo "$dir")"
+  have="$(printf '%s' "$header" | cut -d';' -f4)"
+  if [ "$have" != "$want" ]; then
+    level=WARN; [ "$strict" = 1 ] && level=ERROR
+    echo "$level: $f has vault id '${have:-<none>}', expected '$want' (re-encrypt: ansible-vault rekey --new-vault-id $want@prompt $f)" >&2
+    [ "$strict" = 1 ] && rc=1
   fi
 done < <(find config -type f -name 'vault*.yml')
 

@@ -17,7 +17,12 @@ groups:
   server_arcane: "'tag:CHANGE-ME' in tailscale_tags"
   agent_arcane: "'tag:CHANGE-ME' in tailscale_tags"
   server_semaphore: "'tag:CHANGE-ME' in tailscale_tags"
+  server_traefik: "'tag:CHANGE-ME' in tailscale_tags"   # runs the Traefik edge proxy
   server_wazuh: "'tag:CHANGE-ME' in tailscale_tags"
   agent_wazuh: "'tag:CHANGE-ME' in tailscale_tags"
+  # --- shared-secret groups: a union of the hosts that must share a secret ---
+  # Secrets are scoped by group (see README, "Secrets"). Arkeep's server and its
+  # agents share one secret, so they need a group that is exactly that set:
+  arkeep: "'tag:CHANGE-ME' in tailscale_tags or 'tag:CHANGE-ME' in tailscale_tags"
   # --- anything else you want to attach vars to (names are yours) ----------
   # vps: "'tag:CHANGE-ME' in tailscale_tags"   # then put vars in vars/group/vps.yml

@@ -1,26 +1,8 @@
----
-# In your real fleet-config repo: copy this to config/vars/group/all/vault.yml,
-# fill in real values, then encrypt it in place -- never commit the
-# plaintext version:
+# Scope `base`: encrypted with vault id "base"; only hosts in the `all` group are
+# given that password. Create/edit with:  scripts/vault.sh edit base
 #
-#   cp vault.yml.example vault.yml
-#   # edit vault.yml with real values
-#   ansible-vault encrypt vault.yml
-#
-# reconcile.sh passes --vault-password-file automatically if a .vault_pass
-# file exists at the root of your fleet-config repo; otherwise run
-# ansible-playbook by hand with --ask-vault-pass.
+# Common secrets every host may read. Keep this layer SMALL: every host holds
+# this password, so anything here is exposed if any one host is compromised.
 
-# Shared between hosts/roles/server_arkeep and hosts/roles/agent_arkeep --
-# every host must use the SAME value. Generate: openssl rand -hex 24
-agent_arkeep_secret: CHANGEME
-
-# server_arkeep only. Generate: openssl rand -hex 32
-server_arkeep_secret_key: CHANGEME
-
-# server_arcane only. Generate: openssl rand -base64 32
-server_arcane_encryption_key: CHANGEME
-
-# semaphore only. Generate: openssl rand -base64 32 (admin password: your choice)
-server_semaphore_admin_password: CHANGEME
-server_semaphore_access_key_encryption: CHANGEME
+# Only for joining a brand-new host to the tailnet (omit if you join by hand).
+tailscale_authkey: CHANGEME

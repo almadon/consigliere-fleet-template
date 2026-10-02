@@ -1,0 +1,7 @@
+# Scope `server_traefik`: encrypted with vault id "server_traefik"; only hosts in the `server_traefik` group are
+# given that password. Create/edit with:  scripts/vault.sh edit server_traefik
+#
+# Bunny's API key is account-wide and cannot be scoped, so the control we have
+# is limiting WHICH hosts can decrypt it: only Traefik hosts get this password.
+
+server_traefik_bunny_api_key: CHANGEME

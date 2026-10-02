@@ -1,0 +1,5 @@
+# Scope `server_arkeep`: encrypted with vault id "server_arkeep"; only hosts in the `server_arkeep` group are
+# given that password. Create/edit with:  scripts/vault.sh edit server_arkeep
+
+# Generate: openssl rand -hex 32
+server_arkeep_secret_key: CHANGEME
