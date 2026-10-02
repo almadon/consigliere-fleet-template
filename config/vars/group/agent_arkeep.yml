@@ -1,9 +1,9 @@
 ---
-# Real values for hosts/roles/agent_arkeep -- applies to tag:arkeep-agent
+# Real values for hosts/roles/agent_arkeep -- applies to the agent_arkeep group
 # (every backed-up host). agent_arkeep_secret comes from
 # config/vars/group/all/vault.yml (shared with server_arkeep, must match exactly).
 
-# gRPC address of your tag:arkeep-server host -- its Tailscale address plus
+# gRPC address of your server_arkeep host -- its Tailscale address plus
 # the gRPC port (9090 by default, see hosts/roles/server_arkeep/defaults).
 server_arkeep_addr: "CHANGEME-tailscale-address:9090"
 

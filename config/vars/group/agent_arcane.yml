@@ -1,5 +1,5 @@
 ---
-# Real values for hosts/roles/agent_arcane -- applies to tag:arcane-agent.
+# Real values for hosts/roles/agent_arcane -- applies to the agent_arcane group.
 # agent_arcane_token is NOT here -- it's per-host (minted individually from
 # the Arcane manager's UI), so it belongs in config/vars/host/<hostname>.yml
 # instead. See config/vars/host/example-arcane-agent-host.yml in this directory.
