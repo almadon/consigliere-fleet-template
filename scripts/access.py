@@ -138,6 +138,15 @@ def cmd_show(access):
         print("WARN:", w, file=sys.stderr)
 
 
+def sops_env():
+    """Same default admin key as scripts/secrets.sh, so `access.sh sync` works on its own."""
+    env = dict(os.environ)
+    default = os.path.expanduser("~/.config/sops/age/keys.txt")
+    if not env.get("SOPS_AGE_KEY_FILE") and os.path.exists(default):
+        env["SOPS_AGE_KEY_FILE"] = default
+    return env
+
+
 def is_sops(path):
     with open(path) as fh:
         return any(line.startswith("sops:") for line in fh)
@@ -161,10 +170,12 @@ def cmd_sync(access, update=True, check=False):
         for sc in sorted(readers):
             p = os.path.join(ROOT, scope_file(sc))
             if os.path.exists(p) and is_sops(p):
-                r = subprocess.run(["sops", "updatekeys", "-y", p], cwd=ROOT, capture_output=True, text=True)
+                r = subprocess.run(["sops", "updatekeys", "-y", p], cwd=ROOT, capture_output=True, text=True, env=sops_env())
                 print(("updated  " if r.returncode == 0 else "FAILED   ") + scope_file(sc))
                 if r.returncode != 0:
                     print("   " + (r.stderr.strip().splitlines() or ["?"])[-1], file=sys.stderr)
+                    print("   (your admin key must be a recipient of every secret; it is read from "
+                          "$SOPS_AGE_KEY_FILE or ~/.config/sops/age/keys.txt)", file=sys.stderr)
                     return 1
     return 0
 
