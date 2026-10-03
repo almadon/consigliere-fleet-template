@@ -1,6 +1,0 @@
-# Scope `server_semaphore`: encrypted with vault id "server_semaphore"; only hosts in the `server_semaphore` group are
-# given that password. Create/edit with:  scripts/vault.sh edit server_semaphore
-
-# Generate the key with: openssl rand -base64 32 (admin password: your choice)
-server_semaphore_admin_password: CHANGEME
-server_semaphore_access_key_encryption: CHANGEME

@@ -3,18 +3,18 @@
 # API keys are NOT here: each certificate has its own encrypted file,
 # config/secrets/cw/<name>.yml (vault id cw.<name>). A host reads only the
 # certificates it lists, so list them per host (config/vars/host/<host>.yml) if
-# hosts need different ones. Several layers may each define agent_certwarden_certs_<x>.
+# hosts need different ones. Several layers may each define certwarden_agent_certs_<x>.
 
 # Where Cert Warden is reachable: its Tailscale IP and HTTPS port.
-agent_certwarden_server_url: "https://CHANGEME-tailscale-address:4055"
+certwarden_agent_server_url: "https://CHANGEME-tailscale-address:4055"
 
 # Certificate names as they appear in Cert Warden. Each is written to
 # /opt/common/certs/<name>/{fullchain,privkey}.pem
-agent_certwarden_certs:
+certwarden_agent_certs:
   - name: wildcard_example_com
 
 # Cert Warden presents a self-signed certificate until it has issued one for
 # itself. Point at its CA file, or set false to skip verification (tolerable
 # only because the link is already on the tailnet).
-# agent_certwarden_ca_file: /etc/ssl/certwarden-ca.pem
-# agent_certwarden_verify_tls: false
+# certwarden_agent_ca_file: /etc/ssl/certwarden-ca.pem
+# certwarden_agent_verify_tls: false

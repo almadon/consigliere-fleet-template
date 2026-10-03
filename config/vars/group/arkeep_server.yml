@@ -1,17 +1,17 @@
 ---
-# Real values for hosts/roles/server_arkeep -- applies to the server_arkeep group
-# (one host). Secrets (server_arkeep_secret_key, agent_arkeep_secret) come from
-# config/vars/group/all/vault.yml, never from here.
+# Real values for hosts/roles/arkeep_server -- applies to the arkeep_server group
+# (one host). Secrets (arkeep_server_secret_key, arkeep_agent_secret) come from
+# config/secrets/arkeep/{agent,server}.yml, never from here.
 
 # Leave empty for a standalone deployment. If this node also runs Traefik
 # (see roadmap in VISION.md), set to a shared external Docker network name
-# and see hosts/roles/server_arkeep/README.md for the full wiring.
-server_arkeep_network: ""
+# and see hosts/roles/arkeep_server/README.md for the full wiring.
+arkeep_server_network: ""
 
 # Set once Traefik is fronting this node -- the public HTTPS URL.
-server_arkeep_base_url: ""
+arkeep_server_base_url: ""
 
 # Arkeep's ports bind to this host's Tailscale IP by default (Docker-published
 # ports bypass ufw, so the default keeps the console off public interfaces).
 # Override only if you mean to: "0.0.0.0" listens on every interface.
-# server_arkeep_bind_address: "0.0.0.0"
+# arkeep_server_bind_address: "0.0.0.0"

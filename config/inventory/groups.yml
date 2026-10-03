@@ -1,30 +1,36 @@
 ---
-# YOUR taxonomy. Maps your own Tailscale tag names onto the framework's
-# group names. The framework only ever refers to the group names on the left
-# (they're how hosts/site.yml targets roles); the tags on the right are
-# whatever you've chosen to call things -- they never appear in the public
-# framework.
-#
-# Each host evaluates this against its own tags, which the framework's
-# inventory script exposes as `tailscale_tags` (e.g. ["tag:srv-foo"]).
-# Hosts matching nothing still get the baseline (docker, tailscale, ...).
+# Turns the host table (hosts.yml) into groups. A group name does one of two jobs:
+#   - <app>_<server|agent>  (e.g. arkeep_server) runs that framework role and loads
+#     vars/group/<group>.yml. These come from each host's `run:` list.
+#   - anything else (type_vps, site_home, util_web, ...) is a class you attach
+#     variables to: vars/group/type_vps.yml, and so on.
 plugin: ansible.builtin.constructed
 strict: false
-groups:
-  # --- services: which roles a host runs (framework group names, left) ---
-  server_arkeep: "'tag:CHANGE-ME' in tailscale_tags"   # runs the Arkeep console
-  agent_arkeep: "'tag:CHANGE-ME' in tailscale_tags"   # gets backed up
-  server_arcane: "'tag:CHANGE-ME' in tailscale_tags"
-  agent_arcane: "'tag:CHANGE-ME' in tailscale_tags"
-  server_semaphore: "'tag:CHANGE-ME' in tailscale_tags"
-  server_traefik: "'tag:CHANGE-ME' in tailscale_tags"   # runs the Traefik edge proxy
-  server_certwarden: "'tag:CHANGE-ME' in tailscale_tags"   # the one central ACME client
-  agent_certwarden: "'tag:CHANGE-ME' in tailscale_tags"   # fetches certificates from it
-  server_wazuh: "'tag:CHANGE-ME' in tailscale_tags"
-  agent_wazuh: "'tag:CHANGE-ME' in tailscale_tags"
-  # --- shared-secret groups: a union of the hosts that must share a secret ---
-  # Secrets are scoped by group (see README, "Secrets"). Arkeep's server and its
-  # agents share one secret, so they need a group that is exactly that set:
-  arkeep: "'tag:CHANGE-ME' in tailscale_tags or 'tag:CHANGE-ME' in tailscale_tags"
-  # --- anything else you want to attach vars to (names are yours) ----------
-  # vps: "'tag:CHANGE-ME' in tailscale_tags"   # then put vars in vars/group/vps.yml
+keyed_groups:
+  - {prefix: type, key: type, separator: "_"}
+  - {prefix: site, key: site, separator: "_"}
+  - {prefix: util, key: util, separator: "_"}
+  - {prefix: "", key: run, separator: ""}      # the roles to run, named as-is
+# Optional rules for anything the table can't express (see the reference below):
+# groups:
+#   vps_web: "type == 'vps' and 'web' in (util | default([]))"
+
+# ============================================================================
+# REFERENCE (every form below was tested)
+# ============================================================================
+# `groups:` rules are  <group name>: "<Jinja2 expression>"; the host joins when it
+# is true. Each host evaluates only itself, with its table values as variables
+# (type, site, util, run, ...) plus: inventory_hostname, tailscale_ipv4,
+# tailscale_ips, tailscale_dns_name, tailscale_node_tags (informational only).
+#   one host:        "inventory_hostname == 'my-host'"
+#   a list:          "inventory_hostname in ['my-host', 'other-host']"
+#   name pattern:    "inventory_hostname is match('^(web|app)-[0-9]+$')"
+#   by a value:      "type == 'vps'"        "site in ['site-a', 'site-b']"
+#   in a list value: "'web' in (util | default([]))"
+#   combine:         "type == 'vps' and site == 'site-a' and 'docker' in (util | default([]))"
+#   tailnet range:   "tailscale_ipv4.startswith('100.64.')"
+# Add more `keyed_groups:` entries for any new dimension (owner, env, ...).
+# A `compose:` section defines variables from other values, e.g.
+#   compose: {is_vps: "type == 'vps'"}
+# Operating-system groups need no entry: the baseline play adds os_linux,
+# os_linux_debian, os_darwin, os_darwin_macosx and so on automatically.

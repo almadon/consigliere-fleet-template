@@ -1,6 +1,6 @@
 ---
 # The one host that runs Cert Warden (the central ACME client). Nothing is needed
 # here by default: its DNS provider credentials and ACME account are entered in its
-# own web UI (see the framework's hosts/roles/server_certwarden/README.md).
+# own web UI (see the framework's hosts/roles/certwarden_server/README.md).
 # It binds to the host's Tailscale IP unless you override it:
-# server_certwarden_bind_address: "0.0.0.0"
+# certwarden_server_bind_address: "0.0.0.0"

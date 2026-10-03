@@ -1,9 +1,0 @@
-# Scope `arkeep`: encrypted with vault id "arkeep"; only hosts in the `arkeep` group are
-# given that password. Create/edit with:  scripts/vault.sh edit arkeep
-#
-# `arkeep` is a group of BOTH the Arkeep server and its agents (a union defined
-# in config/inventory/groups.yml), because they share this secret and nobody else
-# should have it.
-
-# Identical on the server and every agent. Generate: openssl rand -hex 24
-agent_arkeep_secret: CHANGEME

@@ -1,8 +1,0 @@
-# Scope `base`: encrypted with vault id "base"; only hosts in the `all` group are
-# given that password. Create/edit with:  scripts/vault.sh edit base
-#
-# Common secrets every host may read. Keep this layer SMALL: every host holds
-# this password, so anything here is exposed if any one host is compromised.
-
-# Only for joining a brand-new host to the tailnet (omit if you join by hand).
-tailscale_authkey: CHANGEME

@@ -1,21 +1,21 @@
 ---
 # Hosts that run Traefik. Routes are collected from ANY variable named
-# server_traefik_routes or server_traefik_routes_<anything> that the host can
+# traefik_server_routes or traefik_server_routes_<anything> that the host can
 # see, so a route can live in this group file, in a service's group file (so it
 # follows the service), in `all.yml`, or in one host's config/vars/host/ file.
 # Layers add up rather than override, because each uses a different name.
 
 # Shared docker network between Traefik and the containers it fronts on this host.
-server_traefik_network: proxynet
+traefik_server_network: proxynet
 
 # Routes served by EVERY Traefik host (example):
-# server_traefik_routes_common:
+# traefik_server_routes_common:
 #   - name: whoami
 #     host: whoami.example.com
 #     backend: http://whoami:80
 #
-# Per-host example, in config/vars/host/svault.yml:
-# server_traefik_routes_vault:
+# Per-host example, in config/vars/host/web-host.yml:
+# traefik_server_routes_vault:
 #   - name: vaultwarden
 #     host: vault.example.com
 #     backend: http://vaultwarden:80

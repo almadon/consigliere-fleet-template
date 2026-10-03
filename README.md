@@ -35,21 +35,23 @@ repository* in its GitHub settings.)
 
 ```
 config/
-  inventory/groups.yml     YOUR tag names -> the framework's group names. Required.
+  inventory/hosts.yml      the host table: every host + type/site/util + run: [roles]. Required.
+  inventory/groups.yml     turns the table's values into groups. Required.
   vars/group/*.yml         values per group (server address, ports, ...)
-  vars/group/<scope>/vault.yml  one encrypted secrets file per scope (see Secrets)
-  secrets/cw/<name>.yml    per-certificate Cert Warden keys, vault id cw.<name> (only hosts that request it)
+  secrets/<kind>/<name>.yml  encrypted secrets, vault id <kind>.<name> (see Secrets)
   vars/host/<host>.yml     per-host values (e.g. an Arcane agent token)
   site.yml.example         optional: rename to site.yml to choose which roles run where
   roles/                   optional: your own roles/apps
 runbooks/                  your own procedures
-scripts/vault.sh           create/edit/view a scope's vault with the right id
+scripts/vault.sh           create/edit/view/decrypt/encrypt a secret with the right id
 scripts/preflight.sh       checks vaults are encrypted + correctly labelled, and for placeholders
 ```
 
-1. Decide your Tailscale tag names and map them in `config/inventory/groups.yml`
-   (left side = the framework's group names; right side = your tags). Tag
-   names are yours to choose, and they never appear in the public framework.
+1. List your hosts in `config/inventory/hosts.yml` (key = the host's Tailscale
+   hostname) with `type`, `site`, `util` and a `run:` list naming the framework's
+   groups (`arkeep_server`, ...) that host should run. `groups.yml` turns these
+   into groups. Your names never appear in the public framework, and Tailscale
+   tags are not used for grouping.
 2. Replace every `CHANGEME` in `config/vars/`, then create the vaults you need
    with `scripts/vault.sh create <scope>` (see Secrets below).
 3. `scripts/preflight.sh --strict` should pass before you push.
@@ -76,36 +78,43 @@ per scope, giving the host only the scopes it should read), then delete your cop
 
 ## Secrets
 
-Secrets are split into **scopes**, each its own encrypted file, so a host can
-be given access to only what it needs and layers build on one another:
+Secrets are **named files**, each with its own vault id, so a host can be given
+access to only what it needs. A scope `<kind>.<name>` is the file
+`config/secrets/<kind>/<name>.yml`, encrypted with vault id `<kind>.<name>`, and
+that same name is the password file a host is given. Folders go big to small:
 
-| Scope (vault id) | File | Who holds the password |
+| Scope | File | Read by (needs the password) |
 |---|---|---|
-| `base` | `config/vars/group/all/vault.yml` | every host (keep it small) |
-| `<group>` | `config/vars/group/<group>/vault.yml` | only hosts in that group |
+| `arkeep.agent` | `config/secrets/arkeep/agent.yml` | Arkeep server and agents (shared secret) |
+| `arkeep.server` | `config/secrets/arkeep/server.yml` | the Arkeep server only |
+| `arcane.server` | `config/secrets/arcane/server.yml` | the Arcane manager, if Ansible deploys it |
+| `semaphore.server` | `config/secrets/semaphore/server.yml` | the Semaphore host |
+| `cw.<name>` | `config/secrets/cw/<name>.yml` | hosts that list certificate `<name>` |
 
-The vault id is the group name (`base` for `all`), and it is also the name of
-the password file a host is given. Ansible only loads a group's files for hosts
-in that group, so a host never decrypts anything outside its scopes. A secret
-shared by a set of hosts (e.g. Arkeep's server and agents) gets a group that is
-exactly that set, plus a scope of the same name (see `arkeep` in `groups.yml`).
+Roles load exactly the secrets they need. A host without a role's password
+stops with a message saying which one, instead of running half-configured.
+(Group-wide vault files, `config/vars/group/<group>/vault.yml`, still work for
+secrets every member of a group should read, and `base` for every host; you
+probably won't need them. Tailscale auth keys are never stored: `bootstrap.sh`
+prompts for one.)
 
 ```bash
-scripts/vault.sh create agent_certwarden   # encrypts vault.yml.example in place
-scripts/vault.sh edit   agent_certwarden   # prompts, or reads ~/.config/consigliere/vault/<scope>
+scripts/vault.sh create arkeep.agent    # encrypts the example in place
+scripts/vault.sh edit   arkeep.agent    # nano; prompts, or reads ~/.config/consigliere/vault/<scope>
+scripts/vault.sh decrypt arkeep.agent   # decrypt IN PLACE to edit in an IDE ...
+scripts/vault.sh encrypt arkeep.agent   # ... and encrypt again afterwards
 ```
 
-`scripts/preflight.sh` checks that every vault file is encrypted and that its
-id matches its folder. Note that **every host clones the ciphertext**; the
-passwords are what you control, so give each host only its scopes.
+`scripts/preflight.sh` (also the pre-commit hook) checks that every secret is
+encrypted and that its vault id matches its path. Note that **every host clones
+the ciphertext**; the passwords are what you control, so give each host only its
+scopes.
 
-### Per-host secrets (certificates)
+### Granting a certificate to specific hosts
 
-`cw._a64.one`-style scopes (`<kind>.<name>`) live in `config/secrets/<kind>/<name>.yml`
-and are not tied to a group: a host reads one only if it lists the name (for
-certificates, in `agent_certwarden_certs`), and only needs that scope's password.
-Use this to give each node just the certificates it needs.
-`scripts/vault.sh create cw.<name>` starts from `config/secrets/cw/_template.yml.example`.
+`cw` stands for Cert Warden. Certificates are granted per host: a host reads
+`cw.<name>` only if it lists `<name>` in `certwarden_agent_certs` (in
+`vars/host/<host>.yml`), and only needs that password.
 
 ## Keeping up with the template
 

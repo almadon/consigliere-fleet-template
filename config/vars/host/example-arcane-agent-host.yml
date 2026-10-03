@@ -1,7 +1,7 @@
 ---
 # Rename this file to the host's actual name (as in `tailscale status`).
 #
-# agent_arcane_token is generated per agent by the Arcane manager's
+# arcane_agent_token is generated per agent by the Arcane manager's
 # edge-agent wizard (Environments -> add an edge agent). It's a manual,
 # one-time step per host, and tokens can be invalidated and regenerated.
-agent_arcane_token: "CHANGEME-arc_..."
+arcane_agent_token: "CHANGEME-arc_..."

@@ -1,5 +1,0 @@
-# Scope `server_arcane`: encrypted with vault id "server_arcane"; only hosts in the `server_arcane` group are
-# given that password. Create/edit with:  scripts/vault.sh edit server_arcane
-
-# Only if Ansible deploys the Arcane manager. Generate: openssl rand -base64 32
-server_arcane_encryption_key: CHANGEME
