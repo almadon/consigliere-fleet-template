@@ -74,7 +74,7 @@ def needs(access):
     hosts = (load(HOSTS, {}).get("all", {}) or {}).get("hosts", {}) or {}
     out = {}
     for name, vals in hosts.items():
-        out[name] = set(resolve(vals or {}, dims, dirs)["secrets"])
+        out[str(name).lower()] = set(resolve(vals or {}, dims, dirs)["secrets"])
     return out
 
 
@@ -93,8 +93,8 @@ def existing_scopes():
 
 def compute(access):
     admins = access.get("admins", {}) or {}
-    hostkeys = access.get("hosts", {}) or {}
-    extra = access.get("extra_grants", {}) or {}
+    hostkeys = {str(k).lower(): v for k, v in (access.get("hosts", {}) or {}).items()}
+    extra = {sc: [str(h).lower() for h in hs] for sc, hs in (access.get("extra_grants", {}) or {}).items()}
     need = needs(access)
     readers = {}
     for host, scopes in need.items():
@@ -126,7 +126,7 @@ def render(rules):
 
 def cmd_show(access):
     rules, readers, need, warnings = compute(access)
-    hostkeys = access.get("hosts", {}) or {}
+    hostkeys = {str(k).lower(): v for k, v in (access.get("hosts", {}) or {}).items()}
     print("Admins:", ", ".join(sorted((access.get("admins") or {}))) or "(none: run scripts/secrets.sh init-admin)")
     print("\nHosts (from hosts.yml):")
     for h in sorted(need):
@@ -178,12 +178,15 @@ def main(argv):
     if cmd in ("add-admin", "add-host"):
         if len(argv) != 3 or not AGE_RE.match(argv[2]):
             sys.exit(f"usage: access.sh {cmd} <name> <age public key (age1...)>")
-        access.setdefault("admins" if cmd == "add-admin" else "hosts", {})[argv[1]] = argv[2]
+        name = argv[1] if cmd == "add-admin" else argv[1].lower()   # host names are case-insensitive
+        access.setdefault("admins" if cmd == "add-admin" else "hosts", {})[name] = argv[2]
         save_access(access)
         print(f"Registered {argv[1]}. Next: scripts/access.sh sync")
         return 0
     if cmd == "remove-host":
-        (access.get("hosts") or {}).pop(argv[1], None)
+        hosts = access.get("hosts") or {}
+        for k in [k for k in hosts if str(k).lower() == argv[1].lower()]:
+            hosts.pop(k)
         save_access(access)
         print(f"Removed {argv[1]}. Next: scripts/access.sh sync, then ROTATE the secrets it could read (it has seen them).")
         return 0
