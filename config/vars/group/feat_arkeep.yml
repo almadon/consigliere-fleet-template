@@ -1,5 +1,5 @@
 ---
-# Real values for hosts/roles/arkeep_agent -- applies to the arkeep_agent group
+# Real values for hosts/roles/arkeep_agent -- applies to hosts tagged feat:arkeep
 # (every backed-up host). arkeep_agent_secret comes from
 # the secret arkeep.agent (config/secrets/arkeep/agent.yml; shared with the server).
 

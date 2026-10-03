@@ -35,7 +35,7 @@ repository* in its GitHub settings.)
 
 ```
 config/
-  inventory/hosts.yml      the host table: every host + type/site/util + run: [roles]. Required.
+  inventory/hosts.yml      the host table: every host + type/site/util/feat. Required.
   inventory/groups.yml     turns the table's values into groups. Required.
   vars/group/*.yml         values per group (server address, ports, ...)
   secrets/<kind>/<name>.yml  encrypted secrets, vault id <kind>.<name> (see Secrets)
@@ -48,8 +48,8 @@ scripts/preflight.sh       checks vaults are encrypted + correctly labelled, and
 ```
 
 1. List your hosts in `config/inventory/hosts.yml` (key = the host's Tailscale
-   hostname) with `type`, `site`, `util` and a `run:` list naming the framework's
-   groups (`arkeep_server`, ...) that host should run. `groups.yml` turns these
+   hostname) with `type`, `site`, `util` (services it provides: `util: [traefik]` runs the
+   Traefik role) and `feat` (agents it runs: `feat: [arkeep]` runs the Arkeep agent). `groups.yml` turns these
    into groups. Your names never appear in the public framework, and Tailscale
    tags are not used for grouping.
 2. Replace every `CHANGEME` in `config/vars/`, then create the vaults you need

@@ -1,0 +1,4 @@
+---
+description: "Example: a timezone prop (copy to tz_<name>.yml, set the zone)"
+roles: [timezone]
+vars: {timezone_name: America/New_York}

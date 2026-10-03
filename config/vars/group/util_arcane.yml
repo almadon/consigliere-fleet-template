@@ -1,5 +1,5 @@
 ---
-# Real values for hosts/roles/arcane_server -- applies to the arcane_server group
+# Real values for hosts/roles/arcane_server -- applies to hosts tagged util:arcane
 # (one host). arcane_server_encryption_key comes from the secret arcane.server (config/secrets/arcane/server.yml).
 
 # Leave empty for a standalone deployment with Arcane's port exposed

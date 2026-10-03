@@ -1,9 +1,8 @@
 ---
-# OPTIONAL. Rename to site.yml to take over "which roles run where" instead
-# of using the framework's default hosts/site.yml. Roles come from the
-# framework (hosts/roles/*) and from this repo's own config/roles/*. Use
-# this to add your own site-specific roles (apps), reorder, or drop plays.
-# Group names must match the left-hand side of inventory/groups.yml.
+# OPTIONAL. Rename to site.yml to take over "what runs" instead of the framework's
+# default hosts/site.yml. Usually you don't need this: what a host runs comes from
+# the tag manifests (config/tags/ and the framework's hosts/tags/). Use it for extra
+# plays that tags can't express. Keep the fleet_plan play to still honour the tags.
 
 - name: Baseline
   hosts: all
@@ -13,14 +12,15 @@
     - tailscale
     - docker
 
-- name: Arkeep server
-  hosts: arkeep_server
+- name: Roles and tasks selected by tag manifests
+  hosts: all
   become: true
-  roles:
-    - arkeep_server
+  tasks:
+    - ansible.builtin.include_role:
+        name: fleet_plan
 
-# - name: My app
-#   hosts: some_group
+# - name: My extra play
+#   hosts: util_my_tag          # any group from hosts.yml/groups.yml
 #   become: true
 #   roles:
-#     - my_app          # config/roles/my_app/ in this repo
+#     - my_app                  # config/roles/my_app/ in this repo

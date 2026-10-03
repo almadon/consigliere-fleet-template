@@ -1,0 +1,7 @@
+---
+description: "Example: resolvers prop (needs systemd-resolved); conflicts: stops two DNS props combining"
+roles: [dns_resolver]
+conflicts: [prop/dns_cloudflare]
+vars:
+  dns_resolver_servers: [9.9.9.9, 149.112.112.112]
+  dns_resolver_over_tls: opportunistic

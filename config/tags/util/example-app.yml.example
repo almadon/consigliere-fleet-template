@@ -1,0 +1,5 @@
+# Copy to config/tags/util/<your-tag>.yml and `util: [<your-tag>]` in hosts.yml.
+description: Example: a site-specific app provided by this host
+order: 70
+requires: [util/docker]
+roles: [example_app]        # config/roles/example_app/ in this repo

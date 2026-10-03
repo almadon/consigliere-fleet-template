@@ -1,5 +1,5 @@
 ---
-# Real values for hosts/roles/arkeep_server -- applies to the arkeep_server group
+# Real values for hosts/roles/arkeep_server -- applies to hosts tagged util:arkeep
 # (one host). Secrets (arkeep_server_secret_key, arkeep_agent_secret) come from
 # config/secrets/arkeep/{agent,server}.yml, never from here.
 

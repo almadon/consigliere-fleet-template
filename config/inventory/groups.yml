@@ -1,16 +1,18 @@
 ---
-# Turns the host table (hosts.yml) into groups. A group name does one of two jobs:
-#   - <app>_<server|agent>  (e.g. arkeep_server) runs that framework role and loads
-#     vars/group/<group>.yml. These come from each host's `run:` list.
-#   - anything else (type_vps, site_home, util_web, ...) is a class you attach
-#     variables to: vars/group/type_vps.yml, and so on.
+# Turns the host table (hosts.yml) into classes you can attach variables to. Every
+# tag value becomes a group named <dimension>_<value>: type_vps, site_home,
+# util_traefik, feat_arkeep, ... Put shared values in vars/group/<group>.yml
+# (e.g. vars/group/util_traefik.yml). What a util:/feat: tag RUNS is decided by its
+# manifest, not here: see config/tags/ (and the framework's hosts/tags/).
 plugin: ansible.builtin.constructed
 strict: false
 keyed_groups:
   - {prefix: type, key: type, separator: "_"}
   - {prefix: site, key: site, separator: "_"}
   - {prefix: util, key: util, separator: "_"}
-  - {prefix: "", key: run, separator: ""}      # the roles to run, named as-is
+  - {prefix: feat, key: feat, separator: "_"}
+  - {prefix: cert, key: cert, separator: "_"}
+  - {prefix: prop, key: prop, separator: "_"}
 # Optional rules for anything the table can't express (see the reference below):
 # groups:
 #   vps_web: "type == 'vps' and 'web' in (util | default([]))"
@@ -20,7 +22,7 @@ keyed_groups:
 # ============================================================================
 # `groups:` rules are  <group name>: "<Jinja2 expression>"; the host joins when it
 # is true. Each host evaluates only itself, with its table values as variables
-# (type, site, util, run, ...) plus: inventory_hostname, tailscale_ipv4,
+# (type, site, util, feat, ...) plus: inventory_hostname, tailscale_ipv4,
 # tailscale_ips, tailscale_dns_name, tailscale_node_tags (informational only).
 #   one host:        "inventory_hostname == 'my-host'"
 #   a list:          "inventory_hostname in ['my-host', 'other-host']"
