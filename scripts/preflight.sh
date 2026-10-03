@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Safety checks for this fleet repo.
-#   scripts/preflight.sh            fatal: any vault file that isn't encrypted;
+#   scripts/preflight.sh            fatal: any secret that isn't sops-encrypted;
 #                                   warns about leftover CHANGEME placeholders
 #   scripts/preflight.sh --strict   placeholders are fatal too (run before deploying)
 # The pre-commit hook (.githooks/pre-commit) runs the default mode.
@@ -9,29 +9,30 @@ cd "$(dirname "$0")/.."
 strict=0; [ "${1:-}" = "--strict" ] && strict=1
 rc=0
 
+# Every secret must be sops-encrypted (never plaintext, never a legacy ansible-vault file).
 while IFS= read -r f; do
   header="$(head -1 "$f")"
-  if ! printf '%s' "$header" | grep -q '^\$ANSIBLE_VAULT;'; then
-    echo "ERROR: $f is not ansible-vault encrypted -- run: scripts/vault.sh create <scope>" >&2
-    rc=1
-    continue
-  fi
-  # The vault id must match the folder (all -> base): that is what lets a host
-  # be given only the passwords for the scopes it should read.
-  dir="$(basename "$(dirname "$f")")"
-  case "$f" in
-    config/secrets/*) want="$(basename "$(dirname "$f")").$(basename "$f" .yml)" ;;  # <kind>.<name>
-    *) want="$([ "$dir" = all ] && echo base || echo "$dir")" ;;
-  esac
-  have="$(printf '%s' "$header" | cut -d';' -f4)"
-  if [ "$have" != "$want" ]; then
+  if printf '%s' "$header" | grep -q '^\$ANSIBLE_VAULT;'; then
+    # Still encrypted, so safe to commit, but hosts can only read sops files.
     level=WARN; [ "$strict" = 1 ] && level=ERROR
-    echo "$level: $f has vault id '${have:-<none>}', expected '$want' (re-encrypt: ansible-vault rekey --new-vault-id $want@prompt $f)" >&2
+    echo "$level: $f is a legacy ansible-vault file -- run: scripts/secrets.sh migrate <scope>" >&2
+    [ "$strict" = 1 ] && rc=1
+  elif ! grep -q '^sops:' "$f"; then
+    echo "ERROR: $f is not sops-encrypted -- run: scripts/secrets.sh encrypt <scope>" >&2
+    rc=1
+  fi
+done < <(find config/secrets -type f -name '*.yml' 2>/dev/null)
+
+# .sops.yaml is generated; flag it when it no longer matches access.yml + the host table.
+if [ -x scripts/access.sh ] && [ -f config/access.yml ]; then
+  if ! scripts/access.sh sync --check >/dev/null 2>&1; then
+    level=WARN; [ "$strict" = 1 ] && level=ERROR
+    echo "$level: .sops.yaml is out of date (or the framework checkout was not found) -- run: scripts/access.sh sync" >&2
     [ "$strict" = 1 ] && rc=1
   fi
-done < <(find config -type f \( -name 'vault*.yml' -o -path 'config/secrets/*.yml' \))
+fi
 
-left="$(grep -rnE 'CHANGE-?ME' config --include='*.yml' --exclude='*.example' --exclude='vault*.yml' || true)"
+left="$(grep -rnE 'CHANGE-?ME' config --include='*.yml' --exclude='*.example' --exclude-dir=secrets || true)"
 if [ -n "$left" ]; then
   echo "Placeholders still to fill in:" >&2
   echo "$left" >&2

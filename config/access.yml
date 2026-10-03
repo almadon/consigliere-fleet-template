@@ -1,0 +1,6 @@
+# Who may read secrets. Edited by scripts/access.sh (add-admin, add-host, remove-host);
+# comments here are not preserved. Which secret each host needs comes from its tags.
+# framework_dir: ../consigliere     # where your framework checkout is (or set CONSIGLIERE_DIR)
+admins: {}
+extra_grants: {}      # {<scope>: [<host>, ...]} for secrets no tag implies
+hosts: {}
