@@ -13,6 +13,7 @@ requires: [util/docker]                   # other tags this implies (optional)
 conflicts: [prop/dns_other]               # tags that can't be combined with this one (optional)
 roles: [my_rpc_proxy]                     # roles to run: framework roles or ./config/roles/<name>
 vars: {timezone_name: UTC}                # variables handed to those roles/tasks (optional)
+firewall: [{port: 8443, proto: tcp}]       # ports to open to the world on hosts with this tag (optional)
 tasks: [files/extra.yml]                  # task files to run, relative to this manifest (optional)
 ```
 
