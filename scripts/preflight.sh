@@ -19,14 +19,17 @@ while IFS= read -r f; do
   # The vault id must match the folder (all -> base): that is what lets a host
   # be given only the passwords for the scopes it should read.
   dir="$(basename "$(dirname "$f")")"
-  want="$([ "$dir" = all ] && echo base || echo "$dir")"
+  case "$f" in
+    config/secrets/*) want="$(basename "$(dirname "$f")").$(basename "$f" .yml)" ;;  # <kind>.<name>
+    *) want="$([ "$dir" = all ] && echo base || echo "$dir")" ;;
+  esac
   have="$(printf '%s' "$header" | cut -d';' -f4)"
   if [ "$have" != "$want" ]; then
     level=WARN; [ "$strict" = 1 ] && level=ERROR
     echo "$level: $f has vault id '${have:-<none>}', expected '$want' (re-encrypt: ansible-vault rekey --new-vault-id $want@prompt $f)" >&2
     [ "$strict" = 1 ] && rc=1
   fi
-done < <(find config -type f -name 'vault*.yml')
+done < <(find config -type f \( -name 'vault*.yml' -o -path 'config/secrets/*.yml' \))
 
 left="$(grep -rnE 'CHANGE-?ME' config --include='*.yml' --exclude='*.example' --exclude='vault*.yml' || true)"
 if [ -n "$left" ]; then

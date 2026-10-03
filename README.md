@@ -38,6 +38,7 @@ config/
   inventory/groups.yml     YOUR tag names -> the framework's group names. Required.
   vars/group/*.yml         values per group (server address, ports, ...)
   vars/group/<scope>/vault.yml  one encrypted secrets file per scope (see Secrets)
+  secrets/cw/<name>.yml    per-certificate Cert Warden keys, vault id cw.<name> (only hosts that request it)
   vars/host/<host>.yml     per-host values (e.g. an Arcane agent token)
   site.yml.example         optional: rename to site.yml to choose which roles run where
   roles/                   optional: your own roles/apps
@@ -97,6 +98,14 @@ scripts/vault.sh edit   agent_certwarden   # prompts, or reads ~/.config/consigl
 `scripts/preflight.sh` checks that every vault file is encrypted and that its
 id matches its folder. Note that **every host clones the ciphertext**; the
 passwords are what you control, so give each host only its scopes.
+
+### Per-host secrets (certificates)
+
+`cw._a64.one`-style scopes (`<kind>.<name>`) live in `config/secrets/<kind>/<name>.yml`
+and are not tied to a group: a host reads one only if it lists the name (for
+certificates, in `agent_certwarden_certs`), and only needs that scope's password.
+Use this to give each node just the certificates it needs.
+`scripts/vault.sh create cw.<name>` starts from `config/secrets/cw/_template.yml.example`.
 
 ## Keeping up with the template
 
