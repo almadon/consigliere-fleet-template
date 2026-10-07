@@ -1,7 +1,7 @@
 # consigliere-fleet-template
 
 A template for **your private fleet repo**, the other half of
-[Consigliere](https://github.com/almadon/consigliere).
+[Consigliere](https://github.com/SerenIT-org/Consigliere).
 
 Consigliere (the framework) is public and generic: roles, a default
 playbook, a console, bootstrap scripts. It contains nothing about *your*
@@ -23,7 +23,7 @@ A GitHub *fork* of a public repo can't be made private, so use the template
 button instead. Either "Use this template" → Owner/Name → **Private**, or:
 
 ```bash
-gh repo create <you>/<fleet-name> --private --template almadon/consigliere-fleet-template --clone
+gh repo create <you>/<fleet-name> --private --template SerenIT-org/consigliere-fleet-template --clone
 cd <fleet-name>
 git config core.hooksPath .githooks        # refuses to commit a plaintext secret
 ```
@@ -63,7 +63,7 @@ scripts/preflight.sh       checks secrets are encrypted, .sops.yaml is current, 
 On the host (Debian), with the framework's `hosts/bootstrap/bootstrap.sh`:
 
 ```bash
-FRAMEWORK_REPO_URL=https://github.com/almadon/consigliere.git \
+FRAMEWORK_REPO_URL=https://github.com/SerenIT-org/Consigliere.git \
 FLEET_CONFIG_REPO_URL=git@github.com:<you>/<fleet-name>.git \
 FLEET_CONFIG_REGISTER_TOKEN=<token> \     # optional, see below
 ./bootstrap.sh
