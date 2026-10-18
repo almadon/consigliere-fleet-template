@@ -15,6 +15,15 @@ file="config/secrets/cw/$name.yml"
 export SOPS_AGE_KEY_FILE="${SOPS_AGE_KEY_FILE:-$HOME/.config/sops/age/keys.txt}"
 [ ! -e "$file" ] || { echo "ERROR: $file already exists (edit it with: scripts/secrets.sh edit cw.$name)" >&2; exit 1; }
 
+# Fail BEFORE asking for keys if no host is set up to read this secret: the encryption rule is
+# derived from the hosts that carry cert: [<name>], so without one sops cannot encrypt the file.
+scripts/access.sh sync --no-update >/dev/null 2>&1 || true
+if ! grep -qF "config/secrets/cw/${name//./\\.}\\.yml" .sops.yaml 2>/dev/null; then
+  echo "ERROR: no host has cert: [$name] in config/inventory/hosts.yml, so there is no encryption rule for this secret." >&2
+  echo "       Add the certificate name to the cert: list of the host(s) that will fetch it, then rerun." >&2
+  exit 1
+fi
+
 read -rsp "API key of the CERTIFICATE '$name' (Certificates > $name > API Key): " ckey; echo
 read -rsp "API key of its PRIVATE KEY (Private Keys > the key used by $name > API Key): " kkey; echo
 [ -n "$ckey" ] && [ -n "$kkey" ] || { echo "ERROR: both keys are needed" >&2; exit 1; }
