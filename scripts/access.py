@@ -69,7 +69,7 @@ def needs(access):
     fw = framework_dir(access)
     resolve = resolver(fw)
     allvars = load(os.path.join(ROOT, "config", "vars", "group", "all.yml"), {})
-    dims = allvars.get("fleet_tag_dimensions", ["util", "feat", "cert", "prop"])
+    dims = allvars.get("fleet_tag_dimensions", ["util", "feat", "cert", "prop", "fw"])
     dirs = [os.path.join(ROOT, "config", "tags"), os.path.join(fw, "hosts", "tags")]
     hosts = (load(HOSTS, {}).get("all", {}) or {}).get("hosts", {}) or {}
     out = {}

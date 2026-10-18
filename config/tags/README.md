@@ -24,7 +24,7 @@ tasks: [files/extra.yml]                  # task files to run, relative to this 
 - A typo such as `util: [traefk]` is a tag with no manifest, so nothing runs. Set
   `fleet_tags_strict: true` in `vars/group/all.yml` to make that an error (then
   give class-only tags an empty manifest: `roles: []`).
-- Dimensions are `util`, `feat`, `cert` and `prop` by default; set `fleet_tag_dimensions`
+- Dimensions are `util`, `feat`, `cert`, `prop` and `fw` by default; set `fleet_tag_dimensions`
   in `vars/group/all.yml` to change them (e.g. add `type`, then `config/tags/type/vps.yml`
   can run roles for every VPS).
 - `cert: [<name>]` makes the host fetch that Cert Warden certificate (the framework's

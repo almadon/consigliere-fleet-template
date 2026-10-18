@@ -14,6 +14,7 @@ keyed_groups:
   - {prefix: feat, key: feat, separator: "_"}
   - {prefix: cert, key: cert, separator: "_"}
   - {prefix: prop, key: prop, separator: "_"}
+  - {prefix: fw, key: fw, separator: "_"}
 # Optional rules for anything the table can't express (see the reference below):
 # groups:
 #   vps_web: "type == 'vps' and 'web' in (util | default([]))"
