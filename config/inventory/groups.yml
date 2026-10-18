@@ -8,6 +8,7 @@ plugin: ansible.builtin.constructed
 strict: false
 keyed_groups:
   - {prefix: type, key: type, separator: "_"}
+  - {prefix: org, key: org, separator: "_"}
   - {prefix: site, key: site, separator: "_"}
   - {prefix: util, key: util, separator: "_"}
   - {prefix: feat, key: feat, separator: "_"}
