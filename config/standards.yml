@@ -1,0 +1,9 @@
+---
+# What every managed host should have. scripts/audit.sh compares hosts.yml with this list and reports the gaps
+# (scripts/audit.sh, scripts/audit.sh missing <feature>). It changes nothing by itself: a gap is closed by editing
+# hosts.yml (the audit prints the exact steps). feature is a role name; applies is "all" or "docker" (hosts with
+# util: [docker]); exclude_types lists host types that are exempt.
+standards:
+  - {feature: arkeep_agent, applies: all}      # backups
+  - {feature: beszel_agent, applies: all}      # monitoring
+  - {feature: arcane_agent, applies: docker}   # container management
