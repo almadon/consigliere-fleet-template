@@ -7,3 +7,12 @@ standards:
   - {feature: arkeep_agent, applies: all}      # backups
   - {feature: beszel_agent, applies: all}      # monitoring
   - {feature: arcane_agent, applies: docker}   # container management
+
+# Tailnet nodes that are deliberately not managed by Consigliere (name: why). scripts/audit.sh live leaves them out.
+ignore:
+  aphelion: the admin Mac
+  mitochon: a Mac
+  pyrite: a phone
+  globalnode: retired
+  yellow: not managed (Alpine; handled separately)
+

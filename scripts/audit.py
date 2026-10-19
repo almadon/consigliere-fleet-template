@@ -271,8 +271,9 @@ def ssh(ip, cmd):
 def cmd_live(hosts, with_ssh):
     peers = tailnet()
     byname = {p["name"]: p for p in peers}
+    ignore = {str(k).lower(): v for k, v in (A.load(STANDARDS, {}).get("ignore") or {}).items()}
     print("Tailnet nodes that are NOT in hosts.yml (nobody manages them):")
-    unmanaged = [p for p in peers if p["name"] not in hosts]
+    unmanaged = [p for p in peers if p["name"] not in hosts and p["name"] not in ignore]
     for p in sorted(unmanaged, key=lambda x: x["name"]):
         status = "online" if p["online"] else "offline"
         kind = {"linux": "Linux (can be onboarded: scripts/audit.sh onboard " + p["name"] + ")", "macOS": "macOS", "iOS": "iOS (not manageable)",
@@ -280,6 +281,9 @@ def cmd_live(hosts, with_ssh):
         print(f"  {p['name']:14} {status:8} {kind}")
     if not unmanaged:
         print("  none")
+    skipped = sorted(p["name"] for p in peers if p["name"] in ignore and p["name"] not in hosts)
+    if skipped:
+        print("  (left out on purpose, see ignore: in config/standards.yml: " + ", ".join(skipped) + ")")
     print("\nHosts in hosts.yml that are not on the tailnet:")
     gone = [n for n in sorted(hosts) if n not in byname]
     print("".join(f"  {n}\n" for n in gone) or "  none")
@@ -305,8 +309,14 @@ def cmd_live(hosts, with_ssh):
         running, _, tail = out.partition("---")
         names = set(running.split())
         miss = [c for f, c in want if c not in names]
+        managed = {c for f, c in want}
+        # features that run here but that Consigliere is not managing: started by hand, or declared but inert
+        loose = sorted(c for f, d in FEATURES.items() for c in [d["container"]] if c and c in names | {x for x in names if x.startswith(c.split("-")[0] + "-")} and c not in managed)
+        loose += sorted(x for x in names if x in ("arcane", "arcane-agent", "beszel", "beszel-agent") and x not in managed and x not in loose)
         rec = tail.strip().replace("\n", " ") or "no reconcile result found"
         print(f"  {n:12} {'all declared containers running' if not miss else 'NOT RUNNING: ' + ', '.join(miss)}; last reconcile: {rec}")
+        if loose:
+            print(f"  {'':12} running but NOT managed by Consigliere: {', '.join(loose)}")
     return 0
 
 
