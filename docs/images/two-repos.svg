@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 380" role="img" aria-labelledby="t d">
+<title id="t">The two repos</title><desc id="d">The public framework repo and your private fleet repo are both pulled by every host, which checks and applies them on a timer.</desc>
+<style>
+:root{--bg:#ffffff;--ink:#16202b;--mute:#566474;--card:#ffffff;--line:#8795a6;
+--b:#e8f0fd;--bs:#2f6fdb;--p:#f1eafb;--ps:#7a45c9;--g:#e6f5ec;--gs:#1f8a4c}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1620;--ink:#e6edf5;--mute:#98a6b6;--card:#18222e;--line:#6f8196;
+--b:#15233b;--bs:#6aa2ff;--p:#231a37;--ps:#b18cf0;--g:#12291d;--gs:#4cc27f}}
+text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;fill:var(--ink)}
+.h{font-size:15px;font-weight:700}.s{font-size:11.5px;fill:var(--mute)}.c{font-size:12.5px;font-weight:600}.cs{font-size:10.5px;fill:var(--mute)}
+.arrow{stroke:var(--line);stroke-width:1.6;fill:none;marker-end:url(#a)}
+</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--line)"/></marker></defs>
+<rect width="960" height="380" rx="14" fill="var(--bg)"/>
+
+<rect x="40" y="28" width="400" height="150" rx="12" fill="var(--b)" stroke="var(--bs)" stroke-width="1.5"/>
+<text class="h" x="58" y="56">Framework repo</text>
+<text class="s" x="58" y="75">Public and generic. You do not edit it.</text>
+<rect x="58" y="92" width="170" height="64" rx="8" fill="var(--card)" stroke="var(--bs)" stroke-opacity=".55"/>
+<text class="c" x="70" y="114">Roles</text><text class="cs" x="70" y="132">what a host can run</text>
+<rect x="244" y="92" width="178" height="64" rx="8" fill="var(--card)" stroke="var(--bs)" stroke-opacity=".55"/>
+<text class="c" x="256" y="114">Tag manifests</text><text class="cs" x="256" y="132">which roles a tag runs</text>
+
+<rect x="520" y="28" width="400" height="150" rx="12" fill="var(--p)" stroke="var(--ps)" stroke-width="1.5"/>
+<text class="h" x="538" y="56">Your fleet repo (this template)</text>
+<text class="s" x="538" y="75">Private. Says what you run and where.</text>
+<rect x="538" y="92" width="110" height="64" rx="8" fill="var(--card)" stroke="var(--ps)" stroke-opacity=".55"/>
+<text class="c" x="550" y="114">Host table</text><text class="cs" x="550" y="132">one row per host</text>
+<rect x="658" y="92" width="110" height="64" rx="8" fill="var(--card)" stroke="var(--ps)" stroke-opacity=".55"/>
+<text class="c" x="670" y="114">Variables</text><text class="cs" x="670" y="132">per group, per host</text>
+<rect x="778" y="92" width="124" height="64" rx="8" fill="var(--card)" stroke="var(--ps)" stroke-opacity=".55"/>
+<text class="c" x="790" y="114">Secrets</text><text class="cs" x="790" y="132">sops, per-host keys</text>
+
+<path class="arrow" d="M240 178 L420 252"/>
+<path class="arrow" d="M720 178 L540 252"/>
+
+<rect x="250" y="256" width="460" height="96" rx="12" fill="var(--g)" stroke="var(--gs)" stroke-width="1.5"/>
+<text class="h" x="268" y="284">Every host</text>
+<text class="s" x="268" y="303">Pulls both repos about every 20 minutes, checks what would change,</text>
+<text class="s" x="268" y="319">applies it, and skips the run when nothing is new.</text>
+<text class="s" x="268" y="337">It decrypts only the secrets its own key was granted.</text>
+</svg>

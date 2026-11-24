@@ -1,26 +1,30 @@
 # consigliere-fleet-template
 
-A template for **your private fleet repo**, the other half of
-[Consigliere](https://github.com/almadon/Consigliere).
+**The starting point for your private fleet repo: your hosts, your settings, your secrets.**
 
-Consigliere (the framework) is public and generic: roles, a default
-playbook, a console, bootstrap scripts. It contains nothing about *your*
-fleet. This repo is where you say what you want from it and keep what must
-stay private. It has two jobs:
+This is the other half of [Consigliere](https://github.com/almadon/Consigliere). The framework is public and generic and knows nothing about your machines. This repo is where you list them, say what each one runs, and keep the values and encrypted secrets that must stay private.
 
-1. **Customization**: your node taxonomy, which roles run where, your own
-   apps/roles, and your runbooks.
-2. **Secrets and variables**: per-group and per-host vars, plus the
-   sops-encrypted secrets.
+> **Status: in testing.** It is the template the maintainer's own fleet was built from, and it moves with the framework.
+> This project comes with no warranty or guarantee of fitness for any purpose. Use it at your own risk.
+>
+> **LLM use.** Built and maintained with substantial AI assistance (Claude Code). Design decisions and reviews are by a human; generated changes are reviewed before they are merged.
 
-Every host clones both repos on each reconcile, so this repo **must be
-private** and each host needs read access to it. The framework arranges that
-for you at bootstrap (see below).
+<p align="center">
+  <img src="docs/images/two-repos.svg" alt="The public framework repo and your private fleet repo are both pulled by every host, which checks and applies them on a timer." width="100%">
+</p>
 
-## Create your private copy
+## What it does
 
-A GitHub *fork* of a public repo can't be made private, so use the template
-button instead. Either "Use this template" → Owner/Name → **Private**, or:
+It gives you the layout a fleet repo needs: a host table, group and host variables, sops-encrypted secrets, a list of who may read which secret, and a place for your own roles and runbooks. Every host clones this repo and the framework on each reconcile, so the repo has to be private and each host needs read access to it. The framework's bootstrap script arranges that.
+
+## Use cases
+
+- You have just installed Consigliere and need a private repo to describe your first hosts in.
+- You are adding a host and want to know where its tags, variables and secrets go.
+
+## Getting started
+
+A GitHub fork of a public repo cannot be made private, so use the template button ("Use this template", owner, name, **Private**), or:
 
 ```bash
 gh repo create <you>/<fleet-name> --private --template almadon/consigliere-fleet-template --clone
@@ -28,10 +32,13 @@ cd <fleet-name>
 git config core.hooksPath .githooks        # refuses to commit a plaintext secret
 ```
 
-(One-time, for whoever hosts the template: mark this repo as a *template
-repository* in its GitHub settings.)
+Then:
 
-## Fill it in
+1. List your hosts in `config/inventory/hosts.yml`. The key is the host's Tailscale hostname. Give each host a `type`, a `site`, `util` (services it provides: `util: [traefik]` runs the Traefik role) and `feat` (agents it runs: `feat: [arkeep]` runs the Arkeep agent). `groups.yml` turns these into groups. Your names never appear in the public framework, and Tailscale tags are not used for grouping.
+2. Replace every `CHANGEME` in `config/vars/`, then create the secrets you need with `scripts/secrets.sh create <scope>` (see Secrets below).
+3. Run `scripts/preflight.sh --strict`. It should pass before you push.
+
+## What is in the repo
 
 ```
 config/
@@ -48,15 +55,6 @@ scripts/secrets.sh         create/edit/view/decrypt/encrypt/rotate a sops secret
 scripts/access.sh          who may read which secret (add-host, sync, show)
 scripts/preflight.sh       checks secrets are encrypted, .sops.yaml is current, and for placeholders
 ```
-
-1. List your hosts in `config/inventory/hosts.yml` (key = the host's Tailscale
-   hostname) with `type`, `site`, `util` (services it provides: `util: [traefik]` runs the
-   Traefik role) and `feat` (agents it runs: `feat: [arkeep]` runs the Arkeep agent). `groups.yml` turns these
-   into groups. Your names never appear in the public framework, and Tailscale
-   tags are not used for grouping.
-2. Replace every `CHANGEME` in `config/vars/`, then create the secrets you need
-   with `scripts/secrets.sh create <scope>` (see Secrets below).
-3. `scripts/preflight.sh --strict` should pass before you push.
 
 ## Deploy a host
 
@@ -131,3 +129,16 @@ Tailscale auth keys are never stored: `bootstrap.sh` prompts for one.
 This is a starting point, not a live link: later changes to the template don't
 flow into your repo. When the framework adds a role with new settings, its docs
 say which variables to add here.
+
+## Documentation
+
+| Read | For |
+|---|---|
+| [Framework README](https://github.com/almadon/Consigliere#readme) | What Consigliere manages and what it leaves alone |
+| [runbooks/adding-a-node.md](runbooks/adding-a-node.md) | The steps to bring a new host in |
+| [Framework docs/security.md](https://github.com/almadon/Consigliere/blob/main/docs/security.md) | Trust boundaries and how secrets are handled |
+| [Framework docs/ownership.md](https://github.com/almadon/Consigliere/blob/main/docs/ownership.md) | What each thing is owned by, and how to roll it back |
+
+## License
+
+The framework is [MIT](https://github.com/almadon/Consigliere/blob/main/LICENSE), and this template is meant to follow it. The `LICENSE` file has not been added to this repo yet.
