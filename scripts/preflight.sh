@@ -38,4 +38,15 @@ if [ -n "$left" ]; then
   echo "$left" >&2
   [ "$strict" = 1 ] && rc=1
 fi
+# Conflicting Traefik routes (same name, or two routes answering the same request) would be refused by the host.
+if [ -f scripts/routes_check.py ]; then
+  py="${ACCESS_PYTHON:-python3}"
+  if ! "$py" -c 'import yaml' 2>/dev/null; then   # use the python that runs ansible, skipping pyenv/Homebrew shims (they start with #!/usr/bin/env bash)
+    for cand in $(type -ap ansible 2>/dev/null); do
+      shebang="$(head -1 "$cand" 2>/dev/null | sed -n 's/^#! *//p')"
+      case "$shebang" in */python*) if [ -x "${shebang%% *}" ]; then py="$shebang"; break; fi ;; esac
+    done
+  fi
+  "$py" scripts/routes_check.py || rc=1
+fi
 exit $rc

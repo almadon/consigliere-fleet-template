@@ -3,7 +3,7 @@
 # config/vars/group/<group>.yml file (e.g. config/vars/group/swarm_manager.yml) as real
 # distinctions show up, or per-host in config/vars/host/<hostname>.yml.
 
-docker_mode: standalone   # standalone | swarm — set per-group once swarm hosts exist
+docker_mode: standalone   # standalone | swarm. Set per-group once swarm hosts exist
 
 # Set once stacks/wazuh/ is deployed in your fleet -- the wazuh_agent
 # role refuses to enroll a wazuh-agent without this. Tailscale address of

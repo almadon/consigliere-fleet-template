@@ -1,0 +1,9 @@
+---
+# The OpenTelemetry Collector (role otel_agent) on every host tagged feat: [otel]. It ships the systemd journal and Docker
+# container logs to Loki, and host numbers to VictoriaMetrics, over the tailnet. Rename this file to feat_otel.yml to use it.
+# Point these at DNS names (or tailnet addresses) of the hosts that run util: [loki] and util: [victoria].
+otel_agent_loki_url: "http://loki.example.com:3100/otlp"
+otel_agent_metrics_url: "http://metrics.example.com:8428/opentelemetry"
+otel_agent_hostmetrics: true
+# Per-container CPU, memory, network, disk I/O and restarts through a read-only Docker socket proxy.
+otel_agent_docker_stats: true

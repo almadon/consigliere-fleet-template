@@ -1,0 +1,13 @@
+---
+# Traefik routes for one domain: one file per domain, named after it. Rename this file to <your-domain>.yml to use it
+# (the template ships it as .example so it routes nothing until you do).
+# cert: the Cert Warden certificate that covers these names (a host serving this file needs cert: [<name>] in the host table
+#       and its secret, made with scripts/cw-add.sh). A wildcard covers one label only: *.example.com does not cover a.b.example.com.
+# via:  the host whose Traefik serves the routes (it needs util: [traefik]). A route can name its own via.
+# Per route: name, host, backend, and optionally profile, internal (LAN and tailnet only), insecure, middlewares, frame_ancestors.
+# scripts/routes_check.py checks the files before you push, and scripts/publish.sh writes a route for you.
+cert: example.com
+via: edge-host
+routes:
+  - {name: wiki, host: wiki.example.com, backend: "http://10.0.0.5:3000"}
+  - {name: admin, host: admin.example.com, backend: "http://10.0.0.6:8080", profile: relaxed, internal: true}

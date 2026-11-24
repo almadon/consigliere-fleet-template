@@ -6,3 +6,7 @@ deploy_key.pub
 *.pem
 *.key
 .DS_Store
+
+# Python bytecode from the helper scripts
+__pycache__/
+*.pyc

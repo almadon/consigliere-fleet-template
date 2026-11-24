@@ -42,19 +42,21 @@ Then:
 
 ```
 config/
-  inventory/hosts.yml      the host table: every host + type/site/util/feat. Required.
-  inventory/groups.yml     turns the table's values into groups. Required.
-  vars/group/*.yml         values per group (server address, ports, ...)
+  inventory/hosts.yml        the host table: every host + type/site/util/feat. Required.
+  inventory/groups.yml       turns the table's values into groups. Required.
+  vars/group/*.yml           values per group (server address, ports, ...)
+  vars/group/*.yml.example   opt-in settings for cmdr, Loki, VictoriaMetrics, Grafana and the otel agent: rename to enable
+  vars/host/<host>.yml       per-host values (e.g. an Arcane agent token)
+  routes/<domain>.yml        Traefik routes, one file per domain (start from routes/example.com.yml.example)
   secrets/<kind>/<name>.yml  sops-encrypted secrets (see Secrets)
-  access.yml               admin and host age public keys (managed by scripts/access.sh)
-  vars/host/<host>.yml     per-host values (e.g. an Arcane agent token)
-  site.yml.example         optional: rename to site.yml to choose which roles run where
-  roles/                   optional: your own roles/apps
-runbooks/                  your own procedures
-scripts/secrets.sh         create/edit/view/decrypt/encrypt/rotate a sops secret
-scripts/access.sh          who may read which secret (add-host, sync, show)
-scripts/preflight.sh       checks secrets are encrypted, .sops.yaml is current, and for placeholders
+  access.yml                 admin and host age public keys (managed by scripts/access.sh)
+  site.yml.example           optional: rename to site.yml to choose which roles run where
+  roles/                     optional: your own roles/apps
+runbooks/                    procedures; the ones here are generic, add your own
+scripts/                     helpers, listed in runbooks/admin-scripts.md and runbooks/cli-reference.md
 ```
+
+The scripts you will reach for most: `secrets.sh` and `access.sh` (secrets and who can read them), `preflight.sh` (checks before you push), `reconcile-now.sh` (reconcile hosts now instead of waiting), `fleet-run.sh` (run a command or update hosts), `publish.sh` and `routes_check.py` (Traefik routes), and `tag.sh` (add or remove a tag on hosts).
 
 ## Deploy a host
 
@@ -135,7 +137,7 @@ say which variables to add here.
 | Read | For |
 |---|---|
 | [Framework README](https://github.com/almadon/Consigliere#readme) | What Consigliere manages and what it leaves alone |
-| [runbooks/adding-a-node.md](runbooks/adding-a-node.md) | The steps to bring a new host in |
+| [runbooks/README.md](runbooks/README.md) | The runbooks: adding a node, publishing a service, cmdr, run reporting, exposure watch and the script reference |
 | [Framework docs/security.md](https://github.com/almadon/Consigliere/blob/main/docs/security.md) | Trust boundaries and how secrets are handled |
 | [Framework docs/ownership.md](https://github.com/almadon/Consigliere/blob/main/docs/ownership.md) | What each thing is owned by, and how to roll it back |
 
