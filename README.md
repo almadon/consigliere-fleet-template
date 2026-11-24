@@ -139,6 +139,10 @@ say which variables to add here.
 | [Framework docs/security.md](https://github.com/almadon/Consigliere/blob/main/docs/security.md) | Trust boundaries and how secrets are handled |
 | [Framework docs/ownership.md](https://github.com/almadon/Consigliere/blob/main/docs/ownership.md) | What each thing is owned by, and how to roll it back |
 
+## Credits
+
+This repo is a layout and a few helper scripts. The work is done by [Consigliere](https://github.com/almadon/Consigliere) and the software it drives, listed with links and licences in its [credits](https://github.com/almadon/Consigliere/blob/main/docs/credits.md). The secrets handling here is [sops](https://github.com/getsops/sops) with [age](https://github.com/FiloSottile/age) keys, and the Cert Warden helper script talks to [Cert Warden](https://github.com/gregtwallace/certwarden).
+
 ## License
 
 The framework is [MIT](https://github.com/almadon/Consigliere/blob/main/LICENSE), and this template is meant to follow it. The `LICENSE` file has not been added to this repo yet.
