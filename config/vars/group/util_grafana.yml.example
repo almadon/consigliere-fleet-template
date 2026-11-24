@@ -1,0 +1,18 @@
+---
+# Grafana (role grafana_server), on the host tagged util: [grafana]. Rename this file to util_grafana.yml to use it.
+# Sign-in goes through your identity provider (the examples assume Pocket ID). Run scripts/observability.sh init --host <host>
+# to store the client id and secret and a break-glass admin password in the secret grafana.server.
+# The client is a confidential one with callback  <grafana_server_url>/login/generic_oauth  and scopes openid profile email groups.
+grafana_server_url: "https://grafana.example.com"
+grafana_server_oidc_issuer_url: "https://id.example.com"
+grafana_server_oidc_admin_groups: [admins]
+grafana_server_oidc_editor_groups: [editors]
+
+# Extra data sources. VictoriaMetrics is reached by name over the shared Docker network.
+grafana_server_datasources_extra:
+  - {name: VictoriaMetrics, type: prometheus, access: proxy, url: "http://victoria:8428", editable: false}
+
+# Dashboards you keep in this repo are provisioned read-only. Add your JSON files under assets/dashboards/ and list them here:
+# grafana_server_dashboards:
+#   - name: my-dashboard
+#     json: "{{ lookup('ansible.builtin.file', fleet_secrets_dir | realpath | dirname | dirname + '/assets/dashboards/my-dashboard.json') | from_json }}"

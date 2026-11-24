@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 # Store a Cert Warden certificate's API keys as an encrypted secret, after checking they work.
-#   scripts/cw-add.sh <certificate-name> [cert-warden-url]
-# e.g. scripts/cw-add.sh a64.one http://100.100.1.10:4050
-#      scripts/cw-add.sh rmrg.casa http://100.120.20.45:4050
+#   scripts/cw-add.sh <certificate-name> <cert-warden-url>
+# e.g. scripts/cw-add.sh example.com http://<cert-warden-host>:4050
 # The name must match the certificate's name in Cert Warden exactly. You are asked for the
 # certificate's API key and its private key's API key (hidden input); nothing is printed or kept
 # in your shell history. The keys are tested with a real download first (HTTP 200 expected), then
 # written to config/secrets/cw/<name>.yml, encrypted for the hosts that have cert: [<name>].
 set -euo pipefail
 cd "$(dirname "$0")/.."
-name="${1:?usage: scripts/cw-add.sh <certificate-name> [cert-warden-url]}"
-url="${2:-http://100.100.1.10:4050}"
+name="${1:?usage: scripts/cw-add.sh <certificate-name> <cert-warden-url>}"
+url="${2:?usage: scripts/cw-add.sh <certificate-name> <cert-warden-url>}"
 file="config/secrets/cw/$name.yml"
 export SOPS_AGE_KEY_FILE="${SOPS_AGE_KEY_FILE:-$HOME/.config/sops/age/keys.txt}"
 [ ! -e "$file" ] || { echo "ERROR: $file already exists (edit it with: scripts/secrets.sh edit cw.$name)" >&2; exit 1; }

@@ -1,0 +1,17 @@
+---
+# cmdr, the fleet's control page (role cmdr), on the host tagged util: [cmdr]. Rename this file to util_cmdr.yml to use it.
+# Sign-in is OpenID Connect against your identity provider (the examples assume Pocket ID). Run scripts/cmdr.sh init --host <host>
+# to store the client id, secret and a generated session secret in the secret cmdr.server. Hosts and routes come from this repo,
+# and live status comes from Loki. See runbooks/cmdr.md.
+cmdr_url: "https://cmdr.example.com"
+cmdr_oidc_issuer_url: "https://id.example.com"
+cmdr_admin_groups: [admins]
+# Loki and VictoriaMetrics, by tailnet address or name (VictoriaMetrics gives the CPU, memory and disk numbers on the host cards).
+cmdr_loki_url: "http://loki.example.com:3100"
+cmdr_victoria_url: "http://metrics.example.com:8428"
+# Names under these domains answer the LAN and the tailnet only (shown dashed, with a tailnet badge on the tools).
+cmdr_internal_domains: []
+
+# The launch buttons. mgmt says who owns the tool's settings: repo (rewritten every run), mixed (shared) or ui (settings live in the app).
+cmdr_tools:
+  - {name: Grafana, url: "https://grafana.example.com", group: Fleet, desc: "logs and dashboards", mgmt: mixed}

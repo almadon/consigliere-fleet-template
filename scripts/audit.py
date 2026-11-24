@@ -12,7 +12,8 @@ Everything here is read-only. It compares what hosts.yml and the tag manifests D
   scripts/audit.sh onboard <name> [--type lxc|vps|vm|metal|unraid] [--docker] [--write]
                                            the exact entry and steps for a new node
 
-For --ssh the tool runs plain `ssh root@<tailscale-ip>`; put extra options in AUDIT_SSH_OPTS
+For --ssh the tool runs `ssh root@<tailscale-ip>` offering the fleet's admin key (the first baseline_admin_ssh_keys entry in config/vars/group/all.yml),
+so your ssh agent (for example Bitwarden's) supplies the private half whatever ~/.ssh/config says. To use other options instead, set AUDIT_SSH_OPTS
 (for example AUDIT_SSH_OPTS="-o IdentitiesOnly=yes -i ~/.ssh/fleet_admin.pub").
 """
 import json
@@ -35,8 +36,8 @@ FEATURES = {
                              "the host's age key must be registered (scripts/access.sh add-host {host} <key>), then scripts/access.sh sync"]},
     "arcane_agent": {"label": "Arcane", "container": "arcane-edge-agent",
                      "how": ["a host with  util: [docker]  gets the Arcane agent by itself; otherwise add  feat: [arcane]  to {host}",
-                             "in the Arcane manager (arc.a64.one) add an edge agent for {host} and copy its token",
-                             "put  arcane_agent_token: arc_...  in config/vars/host/{host}.yml  (start from empros.yml)",
+                             "in the Arcane manager (your Arcane manager) add an edge agent for {host} and copy its token",
+                             "put  arcane_agent_token: arc_...  in config/vars/host/{host}.yml  (start from example-arcane-agent-host.yml)",
                              "or set  arcane_agent_skip: true  there if this host must not run the agent"]},
     "beszel_agent": {"label": "Beszel", "container": "beszel-agent",
                      "how": ["add  prop: [beszel]  to {host} in config/inventory/hosts.yml",
@@ -258,8 +259,37 @@ def tailnet():
     return peers
 
 
+
+
+def default_ssh_opts():
+    """ssh options that pick the fleet's admin key without depending on ~/.ssh/config (see reconcile_now.py): the first key in baseline_admin_ssh_keys."""
+    try:
+        data = yaml.safe_load(open(os.path.join(ROOT, "config", "vars", "group", "all.yml"))) or {}
+        key = next(k for k in (data.get("baseline_admin_ssh_keys") or []) if str(k).startswith("ssh-"))
+    except Exception:  # noqa: BLE001
+        return []
+    import atexit
+    import tempfile
+    fd, path = tempfile.mkstemp(prefix="fleet-admin-", suffix=".pub")
+    with os.fdopen(fd, "w") as fh:
+        fh.write(str(key).strip() + "\n")
+    atexit.register(lambda: os.path.exists(path) and os.remove(path))
+    # One authenticated connection per host is reused by the next commands for a few minutes (ControlMaster), so an agent that asks for approval on every
+    # signature (Bitwarden's) is asked once per host, not once per command. The socket directory is private to you.
+    cm_dir = os.path.join(os.path.expanduser("~"), ".cache", "fleet-ssh")
+    os.makedirs(cm_dir, mode=0o700, exist_ok=True)
+    return ["-o", "IdentitiesOnly=yes", "-i", path, "-o", "ControlMaster=auto", "-o", f"ControlPath={cm_dir}/%C", "-o", "ControlPersist=5m"]
+
+
+_SSH_OPTS = None
+
+
 def ssh(ip, cmd):
-    opts = shlex.split(os.environ.get("AUDIT_SSH_OPTS", ""))
+    global _SSH_OPTS
+    if _SSH_OPTS is None:
+        env = os.environ.get("AUDIT_SSH_OPTS")
+        _SSH_OPTS = shlex.split(env) if env else default_ssh_opts()
+    opts = _SSH_OPTS
     try:
         r = subprocess.run(["ssh", "-n", "-o", "BatchMode=yes", "-o", "ConnectTimeout=8", "-o", "StrictHostKeyChecking=accept-new",
                             *opts, f"root@{ip}", cmd], capture_output=True, text=True, timeout=40)

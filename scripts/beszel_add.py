@@ -12,7 +12,7 @@ encrypted once a host carries the tag. So this does everything together and leav
 
   scripts/beszel-add.sh [--hosts all|a,b,c] [--dry-run] [--replace]
 
-Roll out in stages: first  --hosts empros  (it asks for the key and token and writes the secret), then later
+Roll out in stages: first  --hosts <host>  (it asks for the key and token and writes the secret), then later
 --hosts all  (the secret already exists, so it only tags the remaining hosts and re-encrypts for them).
 --replace rotates the secret (new token or key) without touching the host table.
 For scripts: BESZEL_KEY and BESZEL_TOKEN in the environment are used instead of the prompts.

@@ -1,0 +1,5 @@
+---
+# VictoriaMetrics, the metrics store (role victoria_server), on the host tagged util: [victoria]. Rename this file to util_victoria.yml to use it.
+# Hosts send metrics to it over the tailnet (see feat_otel.yml.example). Grafana reads it as http://victoria:8428.
+victoria_server_data_dir: /srv/bulk/victoria
+victoria_server_retention: 12      # months

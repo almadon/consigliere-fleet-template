@@ -1,0 +1,6 @@
+---
+# Loki, the log store (role loki_server), on the host tagged util: [loki]. Rename this file to util_loki.yml to use it.
+# Hosts send logs to it over the tailnet with OpenTelemetry (see feat_otel.yml.example). It has no public route.
+# Put the data on a disk with room: chunks and the index go here, and anything older than the retention is deleted.
+loki_server_data_dir: /srv/bulk/loki
+loki_server_retention_days: 90

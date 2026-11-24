@@ -11,7 +11,7 @@
 #   scripts/secrets.sh rotate  <scope>    new data key, re-encrypt (do after removing a reader)
 #   scripts/secrets.sh migrate <scope>    convert an old ansible-vault file to sops
 #
-# e.g. arkeep.agent, arkeep.server, cw._a64.one. Who can read each is derived from
+# e.g. arkeep.agent, arkeep.server, cw.example_com. Who can read each is derived from
 # the host table and tag manifests: see scripts/access.sh. Your private key is
 # $SOPS_AGE_KEY_FILE (default ~/.config/sops/age/keys.txt).
 set -euo pipefail
