@@ -9,5 +9,5 @@
 cert: example.com
 via: edge-host
 routes:
-  - {name: wiki, host: wiki.example.com, backend: "http://10.0.0.5:3000"}
-  - {name: admin, host: admin.example.com, backend: "http://10.0.0.6:8080", profile: relaxed, internal: true}
+  - {name: wiki, host: wiki.example.com, backend: "http://192.0.2.5:3000"}
+  - {name: admin, host: admin.example.com, backend: "http://192.0.2.6:8080", profile: relaxed, internal: true}
