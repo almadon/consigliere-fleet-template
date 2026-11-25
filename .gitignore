@@ -10,3 +10,6 @@ deploy_key.pub
 # Python bytecode from the helper scripts
 __pycache__/
 *.pyc
+
+# AI session logs are never committed
+chats/
