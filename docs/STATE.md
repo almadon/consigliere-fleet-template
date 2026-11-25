@@ -9,5 +9,4 @@ What is true right now, including what does not work. Delete this file if it sto
 ## Known gaps
 
 - The `*_init.py` scripts were copied from a working fleet and given a required `--host`. They have not been run from the template. **VERIFY**
-- The template has no `LICENSE` file yet. A template needs a real licence chosen by its owner.
 - Only some runbooks have been generalised for the template.

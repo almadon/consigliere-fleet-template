@@ -154,4 +154,4 @@ say which variables to add here.
 
 ## License
 
-The framework is [MIT](https://github.com/almadon/Consigliere/blob/main/LICENSE), and this template is meant to follow it. The `LICENSE` file has not been added to this repo yet.
+[MIT](LICENSE), like the [framework](https://github.com/almadon/Consigliere). A private fleet repo made from this template is yours: replace the `LICENSE` file with whatever you want it to say, for example that it is private and not licensed for reuse.
