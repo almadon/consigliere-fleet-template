@@ -38,27 +38,9 @@ Then:
 2. Replace every `CHANGEME` in `config/vars/`, then create the secrets you need with `scripts/secrets.sh create <scope>` (see Secrets below).
 3. Run `scripts/preflight.sh --strict`. It should pass before you push.
 
-## What is in the repo
+## Usage
 
-```
-config/
-  inventory/hosts.yml        the host table: every host + type/site/util/feat. Required.
-  inventory/groups.yml       turns the table's values into groups. Required.
-  vars/group/*.yml           values per group (server address, ports, ...)
-  vars/group/*.yml.example   opt-in settings for cmdr, Loki, VictoriaMetrics, Grafana and the otel agent: rename to enable
-  vars/host/<host>.yml       per-host values (e.g. an Arcane agent token)
-  routes/<domain>.yml        Traefik routes, one file per domain (start from routes/example.com.yml.example)
-  secrets/<kind>/<name>.yml  sops-encrypted secrets (see Secrets)
-  access.yml                 admin and host age public keys (managed by scripts/access.sh)
-  site.yml.example           optional: rename to site.yml to choose which roles run where
-  roles/                     optional: your own roles/apps
-runbooks/                    procedures; the ones here are generic, add your own
-scripts/                     helpers, listed in runbooks/admin-scripts.md and runbooks/cli-reference.md
-```
-
-The scripts you will reach for most: `secrets.sh` and `access.sh` (secrets and who can read them), `preflight.sh` (checks before you push), `reconcile-now.sh` (reconcile hosts now instead of waiting), `fleet-run.sh` (run a command or update hosts), `publish.sh` and `routes_check.py` (Traefik routes), and `tag.sh` (add or remove a tag on hosts).
-
-## Deploy a host
+### Deploy a host
 
 On the host (Debian), with the framework's `hosts/bootstrap/bootstrap.sh`:
 
@@ -77,7 +59,7 @@ it, the script prints the public key, and you add it under *Settings → Deploy
 keys* (read-only); the script waits and continues once it works. It then prints the host's age public key for you to grant (see
 Secrets). The first run is check-only; you approve the apply.
 
-## Secrets
+### Secrets
 
 Secrets are **named files** encrypted with [sops](https://github.com/getsops/sops)
 (age keys). A scope `<kind>.<name>` is the file `config/secrets/<kind>/<name>.yml`.
@@ -126,25 +108,50 @@ the ciphertext; the recipient lists decide what each can open.
 
 Tailscale auth keys are never stored: `bootstrap.sh` prompts for one.
 
-## Keeping up with the template
+## How it works
 
-This is a starting point, not a live link: later changes to the template don't
-flow into your repo. When the framework adds a role with new settings, its docs
-say which variables to add here.
+```
+config/
+  inventory/hosts.yml        the host table: every host + type/site/util/feat. Required.
+  inventory/groups.yml       turns the table's values into groups. Required.
+  vars/group/*.yml           values per group (server address, ports, ...)
+  vars/group/*.yml.example   opt-in settings for cmdr, Loki, VictoriaMetrics, Grafana and the otel agent: rename to enable
+  vars/host/<host>.yml       per-host values (e.g. an Arcane agent token)
+  routes/<domain>.yml        Traefik routes, one file per domain (start from routes/example.com.yml.example)
+  secrets/<kind>/<name>.yml  sops-encrypted secrets (see Secrets)
+  access.yml                 admin and host age public keys (managed by scripts/access.sh)
+  site.yml.example           optional: rename to site.yml to choose which roles run where
+  roles/                     optional: your own roles/apps
+runbooks/                    procedures; the ones here are generic, add your own
+scripts/                     helpers, listed in runbooks/admin-scripts.md and runbooks/cli-reference.md
+```
 
-## Documentation
-
-| Read | For |
-|---|---|
-| [Framework README](https://github.com/almadon/Consigliere#readme) | What Consigliere manages and what it leaves alone |
-| [runbooks/README.md](runbooks/README.md) | The runbooks: adding a node, publishing a service, cmdr, run reporting, exposure watch and the script reference |
-| [Framework docs/security.md](https://github.com/almadon/Consigliere/blob/main/docs/security.md) | Trust boundaries and how secrets are handled |
-| [Framework docs/ownership.md](https://github.com/almadon/Consigliere/blob/main/docs/ownership.md) | What each thing is owned by, and how to roll it back |
+The scripts you will reach for most: `secrets.sh` and `access.sh` (secrets and who can read them), `preflight.sh` (checks before you push), `reconcile-now.sh` (reconcile hosts now instead of waiting), `fleet-run.sh` (run a command or update hosts), `publish.sh` and `routes_check.py` (Traefik routes), and `tag.sh` (add or remove a tag on hosts).
 
 ## Credits
 
 This repo is a layout and a few helper scripts. The work is done by [Consigliere](https://github.com/almadon/Consigliere) and the software it drives, listed with links and licences in its [credits](https://github.com/almadon/Consigliere/blob/main/docs/credits.md). The secrets handling here is [sops](https://github.com/getsops/sops) with [age](https://github.com/FiloSottile/age) keys, and the Cert Warden helper script talks to [Cert Warden](https://github.com/gregtwallace/certwarden).
 
+## Documentation
+
+| Read | For |
+|---|---|
+| [docs/README.md](docs/README.md) | State, architecture, ownership, security, decisions and credits for this repo |
+| [Framework README](https://github.com/almadon/Consigliere#readme) | What Consigliere manages and what it leaves alone |
+| [runbooks/README.md](runbooks/README.md) | The runbooks: adding a node, publishing a service, cmdr, run reporting, exposure watch and the script reference |
+| [Framework docs/security.md](https://github.com/almadon/Consigliere/blob/main/docs/security.md) | Trust boundaries and how secrets are handled |
+| [Framework docs/ownership.md](https://github.com/almadon/Consigliere/blob/main/docs/ownership.md) | What each thing is owned by, and how to roll it back |
+
+## Development
+
+Work on a branch and open a pull request. Run `git config core.hooksPath .githooks` once, so the preflight and the commit message check run before each commit. The checks are listed in [AGENTS.md](AGENTS.md).
+
+### Keeping up with the template
+
+This is a starting point, not a live link: later changes to the template don't
+flow into your repo. When the framework adds a role with new settings, its docs
+say which variables to add here.
+
 ## License
 
-The framework is [MIT](https://github.com/almadon/Consigliere/blob/main/LICENSE), and this template is meant to follow it. The `LICENSE` file has not been added to this repo yet.
+[MIT](LICENSE), like the [framework](https://github.com/almadon/Consigliere). A private fleet repo made from this template is yours: replace the `LICENSE` file with whatever you want it to say, for example that it is private and not licensed for reuse.
