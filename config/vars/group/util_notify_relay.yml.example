@@ -1,0 +1,5 @@
+---
+# The notification relay (util: [notify_relay] on one host): holds the Home Assistant token and passes alerts to Supernotify.
+# Rename this file to util_notify_relay.yml to use it. Secrets: notify.relay and notify.client.
+notify_relay_ha_url: "http://homeassistant.example.com:8123"
+notify_relay_targets: [person.alex]

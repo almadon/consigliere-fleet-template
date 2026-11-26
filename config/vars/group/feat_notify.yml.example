@@ -1,0 +1,4 @@
+---
+# fleet-notify through the relay, on every host tagged feat: [notify]. Rename this file to feat_notify.yml to use it.
+# Do not give the same host feat: [apprise]. Secret: notify.client.
+notify_client_url: "http://relayhost:8087"
